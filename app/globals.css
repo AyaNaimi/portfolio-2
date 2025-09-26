@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Russo+One&display=swap'); */
+
+@import url('https://fonts.googleapis.com/css2?family=Ultra&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -39,6 +41,7 @@
   --sidebar-accent-foreground: oklch(0.98 0.01 280);
   --sidebar-border: oklch(0.98 0.01 280 / 0.2);
   --sidebar-ring: oklch(0.55 0.15 300 / 0.5);
+  --font-heading: 'Ultra', sans-serif;
 }
 
 .dark {
@@ -77,10 +80,11 @@
   --sidebar-ring: oklch(0.7 0.18 300 / 0.5);
 }
 
+
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-bebas-neue: 'Bebas Neue', sans-serif;
+  /* --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono); */
+  --font-ultra: 'Ultra';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -124,17 +128,20 @@
     @apply border-border outline-ring/50;
   }
   html, body {
+    
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
   }
+  
+  
   h1, h2, h3, h4 {
-    font-family: var(--font-bebas-neue);
+    @apply font-ultra;
   }
   body {
     @apply text-foreground;
-    background-image: url('/pixel-blast.png'); /* Set Pixel Blast as background */
+    /* background-image: url('/pixel-blast.png'); Set Pixel Blast as background */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -157,11 +164,24 @@
     background: linear-gradient(135deg, oklch(0.7 0.18 300), oklch(0.75 0.15 200));
   }
 
-  .text-gradient {
+  /* .text-gradient {
+
     background: linear-gradient(135deg, oklch(0.55 0.15 300), oklch(0.65 0.12 200));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  } */
+
+  .text-gradient {
+    background: linear-gradient(135deg,
+      oklch(0.45 0.20 0) 0%,
+      oklch(0.55 0.18 300) 50%,
+      oklch(0.60 0.15 200) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: gradientShift 4s ease infinite;
   }
 
   .animate-float {
@@ -186,3 +206,4 @@
     transform: translateY(-20px);
   }
 }
+

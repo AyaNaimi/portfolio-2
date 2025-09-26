@@ -63,7 +63,7 @@ export function LoginForm() {
           <div className="mx-auto w-16 h-16 rounded-full gradient-violet-cyan flex items-center justify-center mb-4">
             <Lock className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gradient mb-2">Administration</h1>
+          <h1 className="text-2xl font-bold text-gradient mb-2 font-heading">Administration</h1>
           <p className="text-muted-foreground">Connectez-vous pour accéder au panneau d'administration</p>
         </div>
 

@@ -24,45 +24,8 @@ interface Project {
   featured: boolean
 }
 
-const initialProjects: Project[] = [
-  {
-    id: 1,
-    title: "E-Commerce Platform",
-    description:
-      "Plateforme e-commerce complète avec gestion des commandes, paiements Stripe, et interface d'administration avancée.",
-    image: "/modern-ecommerce-dashboard.png",
-    technologies: ["React", "Node.js", "PostgreSQL", "Stripe"],
-    category: "Full-Stack",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Task Management App",
-    description: "Application de gestion de tâches collaborative avec temps réel, notifications et analytics.",
-    image: "/task-management-interface.png",
-    technologies: ["Next.js", "TypeScript", "Prisma", "WebSocket"],
-    category: "Full-Stack",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "Pixel Blast",
-    description: "Un jeu de plateforme 2D rétro développé avec Phaser 3, offrant des graphismes pixelisés et un gameplay dynamique.",
-    image: "/pixel-blast.png", // Assurez-vous d'avoir cette image dans le dossier public
-    technologies: ["Phaser 3", "JavaScript", "HTML5", "CSS3"],
-    category: "Frontend",
-    demoUrl: "#", // Remplacez par l'URL de démo si disponible
-    githubUrl: "#", // Remplacez par l'URL GitHub si disponible
-    featured: false,
-  },
-]
-
 export function ProjectsManager() {
-  const [projects, setProjects] = useState<Project[]>(initialProjects)
+  const [projects, setProjects] = useState<Project[]>([])
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const { toast } = useToast()
@@ -79,16 +42,26 @@ export function ProjectsManager() {
   })
 
   useEffect(() => {
-    // Charger les projets depuis localStorage
-    const savedProjects = localStorage.getItem("admin_projects")
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects))
-    }
+    fetchProjects()
   }, [])
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch("/api/projects")
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data: Project[] = await response.json()
+      setProjects(data)
+    } catch (error) {
+      console.error("Failed to fetch projects:", error)
+      toast({ title: "Erreur", description: "Échec du chargement des projets.", variant: "destructive" })
+    }
+  }
 
   const saveProjects = (newProjects: Project[]) => {
     setProjects(newProjects)
-    localStorage.setItem("admin_projects", JSON.stringify(newProjects))
+    // localStorage.setItem("admin_projects", JSON.stringify(newProjects))
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -114,27 +87,40 @@ export function ProjectsManager() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (editingProject) {
-      // Mise à jour
-      const updatedProjects = projects.map((p) =>
-        p.id === editingProject.id ? ({ ...formData, id: editingProject.id } as Project) : p,
-      )
-      saveProjects(updatedProjects)
-      toast({ title: "Projet mis à jour", description: "Le projet a été mis à jour avec succès." })
-    } else {
-      // Création
-      const newProject: Project = {
-        ...formData,
-        id: Date.now(),
-      } as Project
-      saveProjects([...projects, newProject])
-      toast({ title: "Projet créé", description: "Le nouveau projet a été créé avec succès." })
-    }
+    const projectData = { ...formData }
 
-    resetForm()
+    try {
+      let response
+      if (editingProject) {
+        // Mise à jour
+        response = await fetch(`/api/projects`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...projectData, id: editingProject.id }),
+        })
+      } else {
+        // Création
+        response = await fetch("/api/projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(projectData),
+        })
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      toast({ title: "Succès", description: `Projet ${editingProject ? "mis à jour" : "créé"} avec succès.` })
+      resetForm()
+      await fetchProjects() // Re-fetch projects after successful operation
+    } catch (error) {
+      console.error("Failed to save project:", error)
+      toast({ title: "Erreur", description: "Échec de l'enregistrement du projet.", variant: "destructive" })
+    }
   }
 
   const handleEdit = (project: Project) => {
@@ -146,10 +132,22 @@ export function ProjectsManager() {
     setIsCreating(true)
   }
 
-  const handleDelete = (id: number) => {
-    const updatedProjects = projects.filter((p) => p.id !== id)
-    saveProjects(updatedProjects)
-    toast({ title: "Projet supprimé", description: "Le projet a été supprimé avec succès." })
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/projects?id=${id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      toast({ title: "Projet supprimé", description: "Le projet a été supprimé avec succès." })
+      await fetchProjects() // Re-fetch projects after successful deletion
+    } catch (error) {
+      console.error("Failed to delete project:", error)
+      toast({ title: "Erreur", description: "Échec de la suppression du projet.", variant: "destructive" })
+    }
   }
 
   const resetForm = () => {
@@ -171,7 +169,7 @@ export function ProjectsManager() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Gestion des projets</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2 font-heading">Gestion des projets</h1>
           <p className="text-muted-foreground">Ajoutez, modifiez ou supprimez vos projets</p>
         </div>
         <Button onClick={() => setIsCreating(true)} className="gradient-violet-cyan text-white">

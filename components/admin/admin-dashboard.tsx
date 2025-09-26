@@ -75,14 +75,14 @@ export function AdminDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="glass">
             <TabsTrigger value="dashboard">Tableau de bord</TabsTrigger>
-            <TabsTrigger value="projects">Projets</TabsTrigger>
-            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="projects"><FileText className="h-4 w-4 mr-2" />Projets</TabsTrigger>
+            <TabsTrigger value="messages"><MessageSquare className="h-4 w-4 mr-2" />Messages</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-8">
             {/* Welcome */}
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Tableau de bord</h1>
+              <h1 className="text-3xl font-bold text-foreground mb-2 font-heading">Tableau de bord</h1>
               <p className="text-muted-foreground">Gérez votre portfolio et suivez vos statistiques</p>
             </div>
 

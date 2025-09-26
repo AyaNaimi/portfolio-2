@@ -53,7 +53,7 @@ export function HeroSection() {
             <span className="text-xs sm:text-sm text-cyan-300 font-medium">Disponible pour nouveaux projets</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold mb-4 sm:mb-6 lg:mb-8 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold mb-4 sm:mb-6 lg:mb-8 leading-tight font-heading">
             <span
               ref={nameRef}
               className="bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-transparent hover:from-cyan-200 hover:via-purple-300 hover:to-pink-300 transition-all duration-500 cursor-default"

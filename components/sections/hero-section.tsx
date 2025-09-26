@@ -1,5 +1,6 @@
 "use client"
 
+
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowDown, Github, Linkedin, Mail } from "lucide-react"
@@ -28,9 +29,9 @@ export function HeroSection() {
       {/* The existing content of HeroSection */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         {/* <div className="glass rounded-3xl p-8 md:p-12 animate-tilt"> */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="block text-foreground">AYA</span>
-            <span className="block text-gradient">NAIMI</span>
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 font-heading">
+            <span className="block text-foreground">Aya</span>
+            <span className="block text-gradient">Naimi</span>
           </h1>
 
           <div className="text-xl md:text-2xl text-muted-foreground mb-8 h-8">
@@ -44,12 +45,18 @@ export function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Button size="lg"  className="gradient-violet-cyan text-white hover:opacity-90 transition-opacity">
-              Voir mes projets
-            </Button>
+            <a href="#projects">
+              <Button size="lg" className="button">
+                Voir mes projets
+              </Button>
+
+
+            </a>
+            <a href="#contact">
             <Button variant="outline" size="lg" className=" border-primary/90 hover:bg-primary/80 ">
-              Me contacter
-            </Button>
+                Me contacter
+              </Button>
+            </a>
           </div>
 
           <div className="flex justify-center space-x-6">

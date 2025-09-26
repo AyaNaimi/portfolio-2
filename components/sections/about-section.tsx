@@ -6,29 +6,28 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin, Code, Coffee } from "lucide-react"
 
 const timeline = [
+  // {
+  //   year: "2024",
+  //   title: "Lead Developer",
+  //   company: "TechCorp Solutions",
+  //   description: "Direction technique d'une équipe de 5 développeurs, architecture de solutions cloud-native.",
+  // },
+  {
+    year: "2026",
+    title: "Full-Stack Developer",
+    company: "ISGI",
+    description: "Développement d'applications React/Node.js .",
+  },
+  {
+    year: "2025",
+    title: "1 ére année en developpement digital",
+    company: "ISGI",
+    description: "Savoir les base de programmation.",},
   {
     year: "2024",
-    title: "Lead Developer",
-    company: "TechCorp Solutions",
-    description: "Direction technique d'une équipe de 5 développeurs, architecture de solutions cloud-native.",
-  },
-  {
-    year: "2022",
-    title: "Full-Stack Developer",
-    company: "StartupInnovante",
-    description: "Développement d'applications React/Node.js, mise en place de CI/CD et DevOps.",
-  },
-  {
-    year: "2020",
-    title: "Frontend Developer",
-    company: "WebAgency Pro",
-    description: "Création d'interfaces utilisateur modernes et responsive, optimisation des performances.",
-  },
-  {
-    year: "2019",
-    title: "Diplôme Master",
-    company: "École d'Ingénieur",
-    description: "Master en Informatique, spécialisation développement web et mobile.",
+    title: "baccalauréat",
+    company: "École Alwiaame",
+    description: "baccalauréat en sciences physiques",
   },
 ]
 
@@ -71,7 +70,7 @@ export function AboutSection() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
           >
-            Développeur passionné avec plus de 5 ans d'expérience dans la création d'applications web modernes et
+            Développeur passionné avec  la création d'applications web modernes et
             performantes.
           </p>
         </div>

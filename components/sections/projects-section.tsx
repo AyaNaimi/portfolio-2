@@ -7,85 +7,45 @@ import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Github, Filter } from "lucide-react"
 import Image from "next/image"
 
-const projects = [
-  {
-    id: 1,
-    title: "E-Commerce Platform",
-    description:
-      "Plateforme e-commerce complète avec gestion des commandes, paiements Stripe, et interface d'administration avancée.",
-    image: "/modern-ecommerce-dashboard.png",
-    technologies: ["React", "Node.js", "PostgreSQL", "Stripe"],
-    category: "Full-Stack",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Task Management App",
-    description: "Application de gestion de tâches collaborative avec temps réel, notifications et analytics.",
-    image: "/task-management-interface.png",
-    technologies: ["Next.js", "TypeScript", "Prisma", "WebSocket"],
-    category: "Full-Stack",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "AI Content Generator",
-    description: "Générateur de contenu IA avec interface moderne et intégration OpenAI pour la création automatisée.",
-    image: "/ai-content-generator-interface.png",
-    technologies: ["React", "OpenAI", "TailwindCSS", "Vercel"],
-    category: "Frontend",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Real-time Chat API",
-    description: "API de chat temps réel avec authentification JWT, salles privées et historique des messages.",
-    image: "/chat-application-interface.png",
-    technologies: ["Node.js", "Socket.io", "MongoDB", "JWT"],
-    category: "Backend",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Portfolio Designer",
-    description: "Outil de création de portfolios avec templates personnalisables et export automatique.",
-    image: "/portfolio-design-tool.jpg",
-    technologies: ["Vue.js", "Nuxt", "Supabase", "CSS"],
-    category: "Frontend",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Analytics Dashboard",
-    description: "Dashboard d'analytics avec visualisations interactives et rapports automatisés en temps réel.",
-    image: "/analytics-dashboard-charts.png",
-    technologies: ["React", "D3.js", "Express", "Redis"],
-    category: "Full-Stack",
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-]
+interface Project {
+  id: number
+  title: string
+  description: string
+  image: string
+  technologies: string[]
+  category: string
+  demoUrl: string
+  githubUrl: string
+  featured: boolean
+}
 
 const categories = ["Tous", "Full-Stack", "Frontend", "Backend"]
 
 export function ProjectsSection() {
   const [isVisible, setIsVisible] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState("Tous")
-  const [filteredProjects, setFilteredProjects] = useState(projects)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("/api/projects")
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data: Project[] = await response.json()
+        setProjects(data)
+        setFilteredProjects(data) // Initialize filtered projects with all projects
+        console.log("Fetched projects:", data) // Temporary log
+      } catch (error) {
+        console.error("Failed to fetch projects:", error)
+      }
+    }
+
+    fetchProjects()
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -108,7 +68,7 @@ export function ProjectsSection() {
     } else {
       setFilteredProjects(projects.filter((project) => project.category === selectedCategory))
     }
-  }, [selectedCategory])
+  }, [selectedCategory, projects])
 
   return (
     <section ref={sectionRef} id="projects" className="py-20 relative overflow-hidden">
@@ -185,12 +145,16 @@ export function ProjectsSection() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Button size="sm" variant="secondary" className="glass">
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="secondary" className="glass">
-                        <Github className="h-4 w-4" />
-                      </Button>
+                      <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" variant="secondary" className="glass">
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </a>
+                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" variant="secondary" className="glass">
+                          <Github className="h-4 w-4" />
+                        </Button>
+                      </a>
                     </div>
                   </div>
                   <div className="p-6">
@@ -239,12 +203,16 @@ export function ProjectsSection() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Button size="sm" variant="secondary" className="glass">
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="secondary" className="glass">
-                        <Github className="h-4 w-4" />
-                      </Button>
+                      <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" variant="secondary" className="glass">
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </a>
+                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" variant="secondary" className="glass">
+                          <Github className="h-4 w-4" />
+                        </Button>
+                      </a>
                     </div>
                   </div>
                   <div className="p-4">

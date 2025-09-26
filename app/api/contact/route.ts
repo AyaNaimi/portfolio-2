@@ -1,59 +1,46 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
-interface ContactFormData {
-  name: string
-  email: string
-  subject: string
-  message: string
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  timestamp: string;
 }
 
-export async function POST(request: NextRequest) {
+const JSON_SERVER_URL = "http://localhost:3002/messages";
+
+export async function POST(request: Request) {
   try {
-    const body: ContactFormData = await request.json()
-    const { name, email, subject, message } = body
-
-    // Validation des données
-    if (!name || !email || !subject || !message) {
-      return NextResponse.json({ error: "Tous les champs sont requis" }, { status: 400 })
+    const newMessage: Omit<Message, "id" | "timestamp"> = await request.json();
+    const messageWithTimestamp = { ...newMessage, timestamp: new Date().toISOString() };
+    const response = await fetch(JSON_SERVER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(messageWithTimestamp),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    // Validation de l'email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Email invalide" }, { status: 400 })
-    }
-
-    // Ici, vous pouvez intégrer votre service d'email préféré
-    // Par exemple: SendGrid, Resend, Nodemailer, etc.
-
-    // Pour la démo, nous stockons dans localStorage côté client
-    // En production, vous devriez utiliser une vraie base de données
-    const contactMessage = {
-      id: Date.now().toString(),
-      name,
-      email,
-      subject,
-      message,
-      createdAt: new Date().toISOString(),
-      status: "nouveau",
-    }
-
-    // Simulation d'un délai d'envoi
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Log pour le développement
-    console.log("Nouveau message de contact:", contactMessage)
-
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Message envoyé avec succès",
-        id: contactMessage.id,
-      },
-      { status: 200 },
-    )
+    const createdMessage: Message = await response.json();
+    return NextResponse.json(createdMessage, { status: 201 });
   } catch (error) {
-    console.error("Erreur lors de l'envoi du message:", error)
-    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 })
+    console.error("Error sending message to json-server:", error);
+    return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const response = await fetch(JSON_SERVER_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const messages: Message[] = await response.json();
+    return NextResponse.json(messages);
+  } catch (error) {
+    console.error("Error fetching messages from json-server:", error);
+    return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 });
   }
 }
